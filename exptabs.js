@@ -25,10 +25,10 @@
           var numTabs = win.tabs.length;
           for (var j = 0; j < numTabs; j++) {
             var tab = win.tabs[j];
-      if (document.getElementById('inclTitle').checked == true) {
-        document.getElementById('content').value += tab.title + '\n';
-      }
-      document.getElementById('content').value += tab.url + '\n\n';
+			if (document.getElementById('inclTitle').checked == true) {
+				document.getElementById('content').value += tab.title + '\n';
+				}
+			document.getElementById('content').value += tab.url + '\n\n';
           }
         }
       }
@@ -64,6 +64,25 @@
       chrome.tabs.update(tab_id, { url: action_url });
     }
   }
+  
+  function download() {
+	
+    
+	var content = document.getElementById('content').value
+	var data = [];
+	data.push("<html><head></head><body>"+
+	content.replace(new RegExp('\n', 'g'), '<br/>')
+	+"</body></html>");
+
+	var blob = new Blob([data.toString()], {type: "text/html;charset=utf-8"});
+	var url = URL.createObjectURL(blob);
+	var a = document.createElement('a');
+	
+	a.download = "tabs.html";
+	a.href = url;
+	a.click();
+
+  }
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#btOpenTabs').addEventListener('click', openTabs);
@@ -71,5 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#inclAll').addEventListener('click', start);
   document.querySelector('#sendMail0').addEventListener('click', function(){sendMail(0)});
   document.querySelector('#sendMail1').addEventListener('click', function(){sendMail(1)});
+  document.querySelector('#download').addEventListener('click', download);
   start();
 });
