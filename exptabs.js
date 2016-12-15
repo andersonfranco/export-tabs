@@ -69,12 +69,19 @@
 	
     
 	var content = document.getElementById('content').value
-	var data = [];
-	data.push("<html><head></head><body>"+
-	content.replace(new RegExp('\n', 'g'), '<br/>')
-	+"</body></html>");
+	var content_arr = content.split('\n\n');
+	var data = '<html><head></head><body>';
+	for (var i = 0; i < content_arr.length; i++) {
+		var content_url = content_arr[i].split('\n');
+		if (document.getElementById('inclTitle').checked == true) {
+			data+='<a href="'+content_url[1]+'">'+content_url[0]+'</a><br/>';
+			} else {
+			data+='<a href="'+content_arr[i]+'">'+content_arr[i]+'</a><br/>';
+			}
+		}
+	data+='</body></html>';
 
-	var blob = new Blob([data.toString()], {type: "text/html;charset=utf-8"});
+	var blob = new Blob([data], {type: "text/html;charset=utf-8"});
 	var url = URL.createObjectURL(blob);
 	var a = document.createElement('a');
 	
