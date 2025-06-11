@@ -1,4 +1,4 @@
-    var targetWindow = null;
+var targetWindow = null;
     var tabCount = 0;
 
     function start(tab) {
@@ -7,7 +7,7 @@
 
     function getWindows(win) {
       targetWindow = win;
-      chrome.tabs.getAllInWindow(targetWindow.id, getTabs);
+      chrome.tabs.query({windowId: targetWindow.id}, getTabs);
     }
 
     function getTabs(tabs) {
@@ -54,14 +54,15 @@
 
   function sendMail(gm) {
     var action_url = "mailto:?";
-    //action_url += "subject=" + encodeURIComponent(subject) + "&";
     action_url += "body=" + encodeURIComponent(document.getElementById('content').value);
     if (gm == 1) {
       var custom_url = "https://mail.google.com/mail/?extsrc=mailto&url=%s";
       action_url = custom_url.replace("%s", encodeURIComponent(action_url));
       chrome.tabs.create({ url: action_url });
     } else {
-      chrome.tabs.update(tab_id, { url: action_url });
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.update(tabs[0].id, { url: action_url });
+      });
     }
   }
   
